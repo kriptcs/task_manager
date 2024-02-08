@@ -9,6 +9,10 @@ import TaskList from "./components/taskList";
 
 function App() {
   const [count, setCount] = useState(0);
+  const [formData, setFormData] = useState({
+    name: "",
+    task: "",
+  });
 
   const handleFormSubmit = (formData) => {
     // Save form data to local storage

@@ -2,12 +2,27 @@ import React, { useEffect, useState } from "react";
 
 const DisplayData = () => {
   const [submittedData, setSubmittedData] = useState([]);
+  const [triggerUpdate, setTriggerUpdate] = useState(false);
 
   useEffect(() => {
-    // Load data from local storage when the component mounts
-    const storedData = JSON.parse(localStorage.getItem("formData")) || [];
-    setSubmittedData(storedData);
-  }, []); // The empty dependency array ensures that this effect runs only once, similar to componentDidMount
+    // Function to update the state with data from local storage
+    const updateDataFromLocalStorage = () => {
+      const storedData = JSON.parse(localStorage.getItem("formData")) || [];
+      setSubmittedData(storedData);
+      setTriggerUpdate((prev) => !prev);
+    };
+
+    // Update the state when the component mounts
+    updateDataFromLocalStorage();
+
+    // Add an event listener to update the state when local storage changes
+    window.addEventListener("storage", updateDataFromLocalStorage);
+
+    // Cleanup: Remove the event listener when the component is unmounted
+    return () => {
+      window.removeEventListener("storage", updateDataFromLocalStorage);
+    };
+  }, [triggerUpdate]); // The empty dependency array ensures that this effect runs only once, similar to componentDidMount
 
   return (
     <div>
